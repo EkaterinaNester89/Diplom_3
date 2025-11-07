@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from data.common import URLS
+from locators.home_page import HomePageLocators
 
 
 class BasePage:
@@ -22,6 +23,10 @@ class BasePage:
     def open_home_page(self):
         self.open_url(URLS.HOME_PAGE)
 
+    @allure.step(f"Заходим страницу {URLS.LOGIN_PAGE}")
+    def open_login_page(self):
+        self.open_url(URLS.LOGIN_PAGE)
+
     @allure.step("Нажимаем на элемент")
     def click_to_element(self, locator, seconds=3):
         element = WebDriverWait(self.driver, seconds).until(
@@ -35,6 +40,11 @@ class BasePage:
             EC.visibility_of_element_located(locator)
         )
 
+    @allure.step("Ожидаем кликабельность элемента")
+    def wait_element_to_be_clickable(self, locator, seconds=3):
+        return WebDriverWait(self.driver, seconds).until(
+            EC.element_to_be_clickable(locator)
+        )
     @allure.step("Ищем элемент по локатору")
     def find_element(self, locator, seconds=5):
         return self.wait_element_visibility_of_element_located(locator, seconds=seconds)
@@ -87,3 +97,8 @@ class BasePage:
     def get_text(self, locator, seconds=3):
         element = self.find_element(locator, seconds)
         return element.text
+
+    @allure.step("Вводим текст")
+    def set_text(self, locator, text, seconds=3):
+        element = self.find_element(locator, seconds)
+        return element.send_keys(text)

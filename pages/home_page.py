@@ -26,3 +26,7 @@ class HomePage(BasePage):
     def click_ingredient_details_modal_close_button(self):
         self.click_to_element(HomePageLocators.INGREDIENT_DETAILS_MODAL_CLOSE_BUTTON)
         return True
+
+    @allure.step("Получаем стоимость ингредиентов в будущем заказе")
+    def get_price_ingredients_future_order(self):
+        return int(self.get_text(HomePageLocators.ORDER_BASKET_TOTAL_COUNT))

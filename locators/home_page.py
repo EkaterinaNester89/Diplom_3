@@ -9,4 +9,5 @@ class HomePageLocators:
     INGREDIENT_DETAILS_MODAL_CLOSE_BUTTON = By.XPATH, "//div[contains(@class, 'Modal_modal__container')]//button[contains(@class, 'Modal_modal__close_modified')]"
     ORDER_BASKET = By.XPATH, "//ul[contains(@class, 'BurgerConstructor_basket__list')]"
     ORDER_BASKET_TOTAL_COUNT = By.XPATH, "//div[contains(@class, 'BurgerConstructor_basket__totalContainer')]/p"
-
+    ORDER_MAKE_BUTTON = By.XPATH, "//button[text()='Оформить заказ']"
+    ORDER_NUMBER_DONE = By.XPATH, "//h2[contains(@class, 'Modal_modal__title_shadow')]"
