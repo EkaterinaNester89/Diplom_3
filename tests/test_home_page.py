@@ -1,6 +1,7 @@
 import allure
 
 from data.common import URLS
+from locators.home_page import HomePageLocators
 from pages.home_page import HomePage
 
 
@@ -21,19 +22,26 @@ class TestHomePage:
         assert URLS.FEED == home_page.get_current_url()
 
     @allure.title("Проверка кликнуть на ингредиент, появится всплывающее окно с деталями")
-    def test_click_ingredient_shows_modal_success(self,driver):
+    def test_click_ingredient_shows_modal_success(self, driver):
         home_page = HomePage(driver)
         home_page.open_home_page()
         home_page.click_ingredient()
         assert home_page.check_modal_ingredients_details()
 
     @allure.title("Проверка всплывающее окно закрывается кликом по крестику")
-    def test_click_close_icon_close_modal_success(self,driver):
+    def test_click_close_icon_close_modal_success(self, driver):
         home_page = HomePage(driver)
         home_page.open_home_page()
         home_page.click_ingredient()
         assert home_page.click_ingredient_details_modal_close_button()
 
     @allure.title("Проверка при добавлении ингредиента в заказ счётчик этого ингредиента увеличивается.")
-    def test_click_add_ingredient_increment_count_success(self):
-        pass
+    def test_click_add_ingredient_increment_count_success(self, driver):
+        home_page = HomePage(driver)
+        home_page.open_home_page()
+        initial_value = int(home_page.get_text(HomePageLocators.ORDER_BASKET_TOTAL_COUNT))
+        source_element = home_page.find_element(HomePageLocators.INGREDIENT)
+        destination_element = home_page.find_element(HomePageLocators.ORDER_BASKET)
+        home_page.drag_and_drop(source_element, destination_element)
+        finish_value = int(home_page.get_text(HomePageLocators.ORDER_BASKET_TOTAL_COUNT))
+        assert initial_value < finish_value

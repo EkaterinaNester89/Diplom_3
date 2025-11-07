@@ -1,4 +1,5 @@
 import allure
+from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -37,3 +38,52 @@ class BasePage:
     @allure.step("Ищем элемент по локатору")
     def find_element(self, locator, seconds=5):
         return self.wait_element_visibility_of_element_located(locator, seconds=seconds)
+
+    @allure.step("Переносим элемент")
+    def drag_and_drop(self, source_element, destination_element):
+        js_script = """
+         function createEvent(typeOfEvent) {
+             var event = document.createEvent("CustomEvent");
+             event.initCustomEvent(typeOfEvent, true, true, null);
+             event.dataTransfer = {
+                 data: {},
+                 setData: function(key, value) {
+                     this.data[key] = value;
+                 },
+                 getData: function(key) {
+                     return this.data[key];
+                 }
+             };
+             return event;
+         }
+
+         function dispatchEvent(element, event, transferData) {
+             if (transferData !== undefined) {
+                 event.dataTransfer = transferData;
+             }
+             if (element.dispatchEvent) {
+                 element.dispatchEvent(event);
+             } else if (element.fireEvent) {
+                 element.fireEvent("on" + event.type, event);
+             }
+         }
+
+         var source = arguments[0];
+         var target = arguments[1];
+
+         var dragStartEvent = createEvent('dragstart');
+         dispatchEvent(source, dragStartEvent);
+
+         var dropEvent = createEvent('drop');
+         dispatchEvent(target, dropEvent, dragStartEvent.dataTransfer);
+
+         var dragEndEvent = createEvent('dragend');
+         dispatchEvent(source, dragEndEvent, dropEvent.dataTransfer);
+         """
+
+        self.driver.execute_script(js_script, source_element, destination_element)
+
+    @allure.step("Получаем текст элемента")
+    def get_text(self, locator, seconds=3):
+        element = self.find_element(locator, seconds)
+        return element.text
