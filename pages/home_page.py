@@ -1,5 +1,3 @@
-import time
-
 import allure
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -23,7 +21,15 @@ class HomePage(BasePage):
 
     @allure.step("Ищем модальное окно детали ингредиента")
     def check_modal_ingredients_details(self):
-        return self.find_element(HomePageLocators.INGREDIENT_DETAILS_MODAL)
+        return self.wait_element_visibility_of_element_located(
+            HomePageLocators.INGREDIENT_DETAILS_MODAL
+        )
+
+    @allure.step("Проверяем отсутствие модального окна детали ингредиента")
+    def check_not_presence_modal_ingredients_details(self):
+        return self.wait_element_invisibility_of_element_located(
+            HomePageLocators.INGREDIENT_DETAILS_MODAL
+        )
 
     @allure.step("Нажимаем по закрытию модального окна ингредиента")
     def click_ingredient_details_modal_close_button(self):
@@ -40,9 +46,7 @@ class HomePage(BasePage):
         source_element = self.find_element(HomePageLocators.INGREDIENT)
         destination_element = self.find_element(HomePageLocators.ORDER_BASKET)
         self.drag_and_drop(source_element, destination_element)
-        time.sleep(2)
         self.click_to_element(HomePageLocators.ORDER_MAKE_BUTTON)
-        time.sleep(2)
         self.wait_element_to_be_clickable(HomePageLocators.ORDER_NUMBER_DONE)
 
     @allure.step("Получаем номер заказа")

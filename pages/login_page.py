@@ -1,5 +1,3 @@
-import time
-
 import allure
 
 from data.common import URLS
@@ -21,6 +19,10 @@ class LoginPage(BasePage):
     def open_login_page(self):
         self.open_url(URLS.LOGIN_PAGE)
 
+    @allure.step("Проверяем, что пользователь перенаправлен на главную страницу")
+    def check_redirect_home_page(self):
+        self.check_url(URLS.HOME_PAGE)
+
     @allure.step("Логинимся под пользователем")
     def do_login(self, user_data):
         self.open_login_page()
@@ -28,9 +30,8 @@ class LoginPage(BasePage):
         password = user_data.get("password")
         self.set_email(email)
         self.set_password(password)
-        time.sleep(2)
         self.click_to_element(LoginPageLocators.ENTER_BUTTON)
-        time.sleep(2)
+        self.check_redirect_home_page()
 
     @allure.step("Создаем нового пользователя")
     def create_new_user(self):

@@ -1,10 +1,8 @@
 import allure
-from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from data.common import URLS
-from locators.home_page import HomePageLocators
 
 
 class BasePage:
@@ -23,10 +21,29 @@ class BasePage:
     def open_home_page(self):
         self.open_url(URLS.HOME_PAGE)
 
+    @allure.step("Проверка элемент можно нажать и он не перекрыт другим")
+    def check_element_clickable_not_overlay(self, driver, locator):
+        element = EC.element_to_be_clickable(locator)(driver)
+
+        if not element:
+            return False
+
+        is_obstructed = driver.execute_script("""
+                const element = arguments[0];
+                const rect = element.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                const topElement = document.elementFromPoint(x, y);
+                return !element.isSameNode(topElement);
+            """, element)
+
+        return element if not is_obstructed else False
+
+
     @allure.step("Нажимаем на элемент")
     def click_to_element(self, locator, seconds=3):
         element = WebDriverWait(self.driver, seconds).until(
-            EC.element_to_be_clickable(locator)
+            lambda driver: self.check_element_clickable_not_overlay(driver, locator)
         )
         element.click()
 
@@ -34,6 +51,12 @@ class BasePage:
     def wait_element_visibility_of_element_located(self, locator, seconds=3):
         return WebDriverWait(self.driver, seconds).until(
             EC.visibility_of_element_located(locator)
+        )
+
+    @allure.step("Ожидаем отсутствие элемента")
+    def wait_element_invisibility_of_element_located(self, locator, seconds=3):
+        return WebDriverWait(self.driver, seconds).until(
+            EC.invisibility_of_element_located(locator)
         )
 
     @allure.step("Ожидаем кликабельность элемента")
@@ -99,3 +122,7 @@ class BasePage:
     def set_text(self, locator, text, seconds=3):
         element = self.find_element(locator, seconds)
         return element.send_keys(text)
+
+    @allure.step("Проверяем соответствие URL")
+    def check_url(self, url, seconds=20):
+        WebDriverWait(self.driver, seconds).until(EC.url_to_be(url))

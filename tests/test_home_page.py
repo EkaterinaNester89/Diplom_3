@@ -35,7 +35,8 @@ class TestHomePage:
         home_page = HomePage(driver)
         home_page.open_home_page()
         home_page.click_ingredient()
-        assert home_page.click_ingredient_details_modal_close_button()
+        home_page.click_ingredient_details_modal_close_button()
+        assert home_page.check_not_presence_modal_ingredients_details()
 
     @allure.title(
         "Проверка при добавлении ингредиента в заказ счётчик этого ингредиента увеличивается."

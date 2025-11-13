@@ -6,7 +6,7 @@ class HomePageLocators:
     FEED_BUTTON = By.XPATH, "//nav//a//p[text()='Лента Заказов']"
     INGREDIENT = (
         By.XPATH,
-        "//ul[contains(@class, 'BurgerIngredients_ingredients__list')]/a[contains(@class, 'BurgerIngredient_ingredient')]",
+        "//ul[contains(@class, 'BurgerIngredients_ingredients__list')]/a[contains(@class, 'BurgerIngredient_ingredient')]/img",
     )
     INGREDIENT_DETAILS_MODAL = (
         By.XPATH,
@@ -14,7 +14,7 @@ class HomePageLocators:
     )
     INGREDIENT_DETAILS_MODAL_CLOSE_BUTTON = (
         By.XPATH,
-        "//div[contains(@class, 'Modal_modal__container')]//button[contains(@class, 'Modal_modal__close_modified')]",
+        "//div[contains(@class, 'Modal_modal__container')]//button[contains(@class, 'Modal_modal__close_modified')]//*[name()='path']",
     )
     ORDER_BASKET = By.XPATH, "//ul[contains(@class, 'BurgerConstructor_basket__list')]"
     ORDER_BASKET_TOTAL_COUNT = (
